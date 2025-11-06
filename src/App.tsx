@@ -163,7 +163,7 @@ const PROJECTS: Project[] = [
       'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1600&auto=format&fit=crop',
     ],
-    specs: { area: '120 m²', year: '2024', location: 'São Paulo, SP', scope: 'Interiores completos e marcenaria' },
+    specs: { area: '120 m²', year: '2025', location: 'Belém, PA', scope: 'Interiores completos e marcenaria' },
   },
   {
     id: 2,
@@ -202,7 +202,7 @@ const PROJECTS: Project[] = [
       'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1600&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop',
     ],
-    specs: { area: '140 m²', year: '2024', location: 'São Paulo, SP', scope: 'Reforma, acessibilidade e ambientação' },
+    specs: { area: '140 m²', year: '2024', location: 'Belém, PA', scope: 'Reforma, acessibilidade e ambientação' },
   },
   {
     id: 5,
@@ -215,7 +215,7 @@ const PROJECTS: Project[] = [
       'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1600&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1475855581690-80accde3ae2b?q=80&w=1600&auto=format&fit=crop',
     ],
-    specs: { area: '48 m²', year: '2021', location: 'São Paulo, SP', scope: 'Conceito, layout e mobiliário solto' },
+    specs: { area: '48 m²', year: '2021', location: 'Belém, PA', scope: 'Conceito, layout e mobiliário solto' },
   },
   {
     id: 6,
@@ -467,7 +467,7 @@ function Footer() {
   return (
     <footer className="border-t py-10 text-sm">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 md:flex-row">
-        <p className="text-muted-foreground">© {new Date().getFullYear()} Estúdio Luana Palheta — Arq. & Interiores · São Paulo/SP</p>
+        <p className="text-muted-foreground">© {new Date().getFullYear()} Escritório Luana Palheta — Arq. & Interiores · Belém/PA</p>
         <div className="flex items-center gap-6">
           <a className="inline-flex items-center gap-2 hover:text-primary hover:underline decoration-primary underline-offset-4" href="https://instagram.com" target="_blank" rel="noreferrer">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
