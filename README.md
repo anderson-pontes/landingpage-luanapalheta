@@ -1,4 +1,4 @@
-# Landing Page – Estúdio de Arquitetura
+# Landing Page – Escritório de Arquitetura Luana Palheta
 
 Landing page moderna e responsiva para uma profissional de Arquitetura e Interiores. Inclui seções completas, tema claro/escuro com persistência, portfólio com galeria por projeto (modal + lightbox), SEO básico e formulário de contato integrado (Formspree).
 
