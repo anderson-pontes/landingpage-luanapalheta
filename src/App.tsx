@@ -710,6 +710,68 @@ function Contato() {
 }
 
 function ARSection() {
+  const modelViewerRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    // Aguarda o model-viewer carregar completamente
+    const timer = setTimeout(() => {
+      if (modelViewerRef.current) {
+        const modelViewer = modelViewerRef.current as any
+        // Força a exibição do botão AR se disponível
+        if (modelViewer.canActivateAR) {
+          modelViewer.addEventListener('ar-status', (event: any) => {
+            console.log('AR Status:', event.detail.status)
+          })
+        }
+      }
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleARClick = async () => {
+    if (modelViewerRef.current) {
+      const modelViewer = modelViewerRef.current as any
+      
+      try {
+        // Método 1: Tenta usar a API nativa do model-viewer
+        if (typeof modelViewer.activateAR === 'function') {
+          await modelViewer.activateAR()
+          return
+        }
+        
+        // Método 2: Tenta encontrar o botão AR no shadow DOM
+        if (modelViewer.shadowRoot) {
+          const arButton = modelViewer.shadowRoot.querySelector('button[ar-button]') ||
+                           modelViewer.shadowRoot.querySelector('[slot="ar-button"]') ||
+                           modelViewer.shadowRoot.querySelector('button')
+          if (arButton) {
+            arButton.click()
+            return
+          }
+        }
+        
+        // Método 3: Para Android - usa Scene Viewer diretamente
+        const src = modelViewer.src || modelViewer.getAttribute('src')
+        if (src && /Android/i.test(navigator.userAgent)) {
+          // URL do Scene Viewer para Android
+          const sceneViewerUrl = `https://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(src)}&mode=ar_only`
+          window.open(sceneViewerUrl, '_blank')
+          return
+        }
+        
+        // Método 4: Fallback - tenta abrir o modelo em uma nova aba
+        if (src) {
+          window.open(src, '_blank')
+        }
+      } catch (error) {
+        console.error('Erro ao ativar AR:', error)
+        // Fallback final: mostra mensagem ao usuário
+        alert('AR não está disponível no momento. Certifique-se de estar usando um dispositivo móvel com suporte a AR.')
+      }
+    }
+  }
+
   return (
     <section id="ar" className="border-t py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -769,14 +831,16 @@ function ARSection() {
               */}
               {/* @ts-expect-error - model-viewer é um web component customizado */}
               <model-viewer
+                ref={modelViewerRef}
                 src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
                 alt="Modelo 3D de exemplo - Projeto arquitetônico"
-                ar=""
-                ar-modes="webxr scene-viewer quick-look"
+                ar
+                ar-modes="scene-viewer webxr quick-look"
                 ar-scale="auto"
-                camera-controls=""
+                camera-controls
                 environment-image="neutral"
                 shadow-intensity="1"
+                interaction-prompt="none"
                 style={{
                   width: '100%',
                   height: '500px',
@@ -784,14 +848,24 @@ function ARSection() {
                 }}
                 ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
               >
-                {/* Botão de fallback caso AR não esteja disponível */}
-                <div slot="ar-button" className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                  <button className="rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-md transition-all hover:bg-primary/90">
-                    Ver em AR
-                  </button>
-                </div>
               {/* @ts-expect-error - model-viewer é um web component customizado */}
               </model-viewer>
+              
+              {/* Botão AR externo - sempre visível, especialmente no Android */}
+              <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
+                <button 
+                  onClick={handleARClick}
+                  className="rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-95 touch-manipulation"
+                  aria-label="Ver modelo em realidade aumentada"
+                >
+                  <span className="flex items-center gap-2">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Ver em AR
+                  </span>
+                </button>
+              </div>
               
               {/* Overlay informativo */}
               <div className="absolute top-4 right-4 rounded-lg border border-border/50 bg-background/95 px-3 py-2 text-xs backdrop-blur-sm">
