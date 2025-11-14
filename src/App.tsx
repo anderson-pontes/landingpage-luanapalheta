@@ -767,13 +767,14 @@ function ARSection() {
                 2. Coloque na pasta public/ (ex: public/modelo-cadeira.glb)
                 3. Substitua o src abaixo por: src="/modelo-cadeira.glb"
               */}
+              {/* @ts-expect-error - model-viewer é um web component customizado */}
               <model-viewer
                 src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
                 alt="Modelo 3D de exemplo - Projeto arquitetônico"
-                ar
+                ar=""
                 ar-modes="webxr scene-viewer quick-look"
                 ar-scale="auto"
-                camera-controls
+                camera-controls=""
                 environment-image="neutral"
                 shadow-intensity="1"
                 style={{
@@ -789,6 +790,7 @@ function ARSection() {
                     Ver em AR
                   </button>
                 </div>
+              {/* @ts-expect-error - model-viewer é um web component customizado */}
               </model-viewer>
               
               {/* Overlay informativo */}

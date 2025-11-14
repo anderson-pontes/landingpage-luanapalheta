@@ -1,7 +1,9 @@
-declare namespace JSX {
-  interface IntrinsicElements {
-    'model-viewer': React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLElement> & {
+import React from 'react'
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'model-viewer': {
         src?: string
         alt?: string
         ar?: boolean | string
@@ -11,9 +13,10 @@ declare namespace JSX {
         'environment-image'?: string
         'shadow-intensity'?: string
         'ios-src'?: string
-      },
-      HTMLElement
-    >
+        style?: React.CSSProperties
+        children?: React.ReactNode
+      }
+    }
   }
 }
 
