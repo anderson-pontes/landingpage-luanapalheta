@@ -36,6 +36,7 @@ function Navbar({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: 
           <a href="#sobre" className="text-sm hover:text-primary hover:underline decoration-primary underline-offset-4">Sobre</a>
           <a href="#servicos" className="text-sm hover:text-primary hover:underline decoration-primary underline-offset-4">Serviços</a>
           <a href="#portfolio" className="text-sm hover:text-primary hover:underline decoration-primary underline-offset-4">Portfólio</a>
+          <a href="#ar" className="text-sm hover:text-primary hover:underline decoration-primary underline-offset-4">AR</a>
           <a href="#depoimentos" className="text-sm hover:text-primary hover:underline decoration-primary underline-offset-4">Depoimentos</a>
           <a href="#contato" className="text-sm hover:text-primary hover:underline decoration-primary underline-offset-4">Contato</a>
         </nav>
@@ -708,6 +709,138 @@ function Contato() {
   )
 }
 
+function ARSection() {
+  return (
+    <section id="ar" className="border-t py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeading 
+          kicker="realidade aumentada" 
+          title="Visualize projetos em 3D" 
+          subtitle="Experimente nossos projetos arquitetônicos em realidade aumentada. Visualize móveis, layouts e espaços no seu ambiente real." 
+        />
+        
+        <div className="mt-12 grid gap-8 lg:grid-cols-2 lg:gap-12">
+          {/* Conteúdo explicativo */}
+          <div className="flex flex-col justify-center">
+            <h3 className="mb-4 text-xl font-semibold tracking-tight">Como funciona</h3>
+            <ul className="space-y-4 text-sm text-muted-foreground">
+              <li className="flex items-start gap-3">
+                <svg className="mt-0.5 h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Abra esta página em um dispositivo móvel (iOS ou Android)</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="mt-0.5 h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Toque no botão "Ver em AR" abaixo do modelo 3D</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="mt-0.5 h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Posicione o modelo no seu espaço usando a câmera</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="mt-0.5 h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Explore o modelo em escala real no seu ambiente</span>
+              </li>
+            </ul>
+            <div className="mt-8 rounded-lg border bg-card p-6">
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">Dica:</strong> Funciona melhor em dispositivos iOS (Safari) e Android (Chrome). 
+                Certifique-se de permitir o acesso à câmera quando solicitado.
+              </p>
+            </div>
+          </div>
+
+          {/* Model Viewer 3D */}
+          <div className="relative">
+            <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg">
+              {/* Modelo 3D - Exemplo de móvel/objeto arquitetônico */}
+              {/* 
+                Para usar seu próprio modelo 3D:
+                1. Converta seu modelo para formato .glb ou .gltf
+                2. Coloque na pasta public/ (ex: public/modelo-cadeira.glb)
+                3. Substitua o src abaixo por: src="/modelo-cadeira.glb"
+              */}
+              <model-viewer
+                src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+                alt="Modelo 3D de exemplo - Projeto arquitetônico"
+                ar
+                ar-modes="webxr scene-viewer quick-look"
+                ar-scale="auto"
+                camera-controls
+                environment-image="neutral"
+                shadow-intensity="1"
+                style={{
+                  width: '100%',
+                  height: '500px',
+                  backgroundColor: 'transparent',
+                }}
+                ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+              >
+                {/* Botão de fallback caso AR não esteja disponível */}
+                <div slot="ar-button" className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                  <button className="rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-md transition-all hover:bg-primary/90">
+                    Ver em AR
+                  </button>
+                </div>
+              </model-viewer>
+              
+              {/* Overlay informativo */}
+              <div className="absolute top-4 right-4 rounded-lg border border-border/50 bg-background/95 px-3 py-2 text-xs backdrop-blur-sm">
+                <span className="text-muted-foreground">Modelo 3D interativo</span>
+              </div>
+            </div>
+            
+            {/* Instruções adicionais */}
+            <p className="mt-4 text-center text-xs text-muted-foreground">
+              Use os controles para rotacionar, zoom e explorar o modelo. Toque em "Ver em AR" para visualizar no seu espaço.
+            </p>
+          </div>
+        </div>
+
+        {/* Cards de projetos com AR */}
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-xl border bg-card p-6 shadow-sm transition hover:shadow-md">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+              <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h3 className="mb-2 font-semibold tracking-tight">Mobiliário</h3>
+            <p className="text-sm text-muted-foreground">Visualize móveis e objetos de decoração em escala real no seu espaço.</p>
+          </div>
+          
+          <div className="rounded-xl border bg-card p-6 shadow-sm transition hover:shadow-md">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+              <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </div>
+            <h3 className="mb-2 font-semibold tracking-tight">Layouts</h3>
+            <p className="text-sm text-muted-foreground">Experimente diferentes layouts e disposições de móveis antes de decidir.</p>
+          </div>
+          
+          <div className="rounded-xl border bg-card p-6 shadow-sm transition hover:shadow-md">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+              <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 font-semibold tracking-tight">Espaços</h3>
+            <p className="text-sm text-muted-foreground">Visualize projetos completos de ambientes em realidade aumentada.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Footer() {
   return (
     <footer className="border-t py-10 text-sm">
@@ -779,6 +912,9 @@ export default function App() {
         </div>
         <div className="animate-in fade-in-50 slide-in-from-bottom-2 duration-700">
           <Contato />
+        </div>
+        <div className="animate-in fade-in-50 slide-in-from-bottom-2 duration-700">
+          <ARSection />
         </div>
       </main>
       <Footer />
