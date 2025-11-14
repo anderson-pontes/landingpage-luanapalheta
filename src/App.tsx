@@ -1,5 +1,5 @@
 import './index.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 function ThemeToggle({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: () => void }) {
   const isDark = theme === 'dark'
@@ -49,35 +49,280 @@ function Navbar({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: 
 }
 
 function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    // Força o vídeo a tocar quando o componente montar
+    const playVideo = async () => {
+      if (videoRef.current) {
+        try {
+          // Define o volume como 0 para garantir que está mudo
+          videoRef.current.volume = 0
+          await videoRef.current.play()
+        } catch (error) {
+          console.log('Erro ao reproduzir vídeo:', error)
+          // Se falhar, tenta novamente após um pequeno delay
+          setTimeout(() => {
+            if (videoRef.current) {
+              videoRef.current.volume = 0
+              videoRef.current.play().catch(() => {})
+            }
+          }, 500)
+        }
+      }
+    }
+    
+    // Aguarda o vídeo estar pronto
+    const handleCanPlay = () => {
+      playVideo()
+    }
+    
+    if (videoRef.current) {
+      if (videoRef.current.readyState >= 3) {
+        // Vídeo já está pronto
+        playVideo()
+      } else {
+        videoRef.current.addEventListener('canplay', handleCanPlay, { once: true })
+      }
+    }
+    
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.removeEventListener('canplay', handleCanPlay)
+      }
+    }
+  }, [])
+
   return (
-    <section id="hero" className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_60%_at_50%_-10%,oklch(0.968_0.007_247.896),transparent)]" />
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:gap-16 md:py-28">
-        <div>
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-            Arquitetura autoral, funcional e atemporal
-          </h1>
-          <p className="mt-4 max-w-prose text-muted-foreground">
-            Projetos residenciais e comerciais com curadoria de materiais, iluminação e ergonomia. Do conceito à execução.
-          </p>
-          <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap sm:gap-4">
-            <a href="#contato" className="inline-flex w-full items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow hover:opacity-90 sm:w-auto">Agendar Conversa</a>
-            <a href="#portfolio" className="inline-flex w-full items-center justify-center rounded-md border px-5 py-3 text-sm font-medium hover:bg-muted sm:w-auto">Ver Portfólio</a>
-          </div>
-          <div className="mt-8 flex items-center gap-6 text-xs text-muted-foreground">
-            <span>+7 anos de experiência</span>
-            <span>+120 projetos entregues</span>
-            <span>Atendimento em todo o Brasil</span>
-          </div>
-        </div>
-        <div className="relative">
-          <img
-            className="aspect-4/3 w-full rounded-xl border object-cover shadow-sm"
-            alt="Sala de estar contemporânea com marcenaria e iluminação cênica"
-            src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
+    <section id="hero" className="relative overflow-hidden" style={{ 
+      minHeight: '90vh', 
+      height: 'auto',
+      width: '100vw',
+      position: 'relative',
+      left: '50%',
+      right: '50%',
+      marginLeft: '-50vw',
+      marginRight: '-50vw',
+    }}>
+      {/* Vídeo/GIF/Imagem de fundo - cobre toda a seção */}
+      <div className="absolute z-0 overflow-hidden" style={{ 
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100%',
+        minHeight: '90vh',
+      }}>
+        {/* 
+          INSTRUÇÕES PARA ADICIONAR VÍDEO:
+          
+          Opção 1 - Vídeo local:
+          1. Coloque seu arquivo de vídeo na pasta public/ (ex: public/video-arquitetura.mp4)
+          2. Descomente o código do vídeo abaixo e ajuste o caminho:
+             <source src="/video-arquitetura.mp4" type="video/mp4" />
+          
+          Opção 2 - URL externa:
+          1. Use uma URL de vídeo que permita acesso direto (sem CORS)
+          2. Substitua a URL abaixo pela sua URL
+          
+          Opção 3 - GIF:
+          Substitua todo o elemento <video> por:
+          <img 
+            src="/seu-arquivo.gif" 
+            alt="Background arquitetura" 
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
+        */}
+        
+        {/* Imagem de fundo padrão - sempre visível */}
+        <img
+          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1920&auto=format&fit=crop"
+          alt="Background arquitetura - cozinha moderna e espaçosa"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100%',
+            minHeight: '90vh',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+            zIndex: 0,
+            display: 'block',
+          }}
+        />
+        
+        {/* Vídeo de fundo - descomente e configure quando tiver um vídeo disponível */}
+        {/* 
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            objectPosition: 'center center',
+            width: '100%',
+            height: '100%',
+            minWidth: '100%',
+            minHeight: '100%',
+          }}
+          onError={(e) => {
+            // Se o vídeo falhar, esconde o elemento para mostrar a imagem de fundo
+            const target = e.target as HTMLVideoElement
+            target.style.display = 'none'
+          }}
+        >
+          <source src="/video-arquitetura.mp4" type="video/mp4" />
+          <source src="/video-arquitetura.webm" type="video/webm" />
+        </video>
+        */}
+        
+        {/* Overlay para legibilidade do texto - gradiente horizontal: mais opaco à esquerda, mais transparente à direita */}
+        <div 
+          className="absolute bg-gradient-to-r from-background/95 via-background/75 to-background/40"
+          style={{
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100%',
+            minHeight: '90vh',
+          }}
+        ></div>
+        <div 
+          className="absolute bg-gradient-to-t from-background/30 via-transparent to-transparent"
+          style={{
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100%',
+            minHeight: '90vh',
+          }}
+        ></div>
+      </div>
+      
+      {/* Grid principal - layout assimétrico */}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-16 md:py-24">
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+          
+          {/* Coluna esquerda - Conteúdo principal */}
+          <div className="lg:col-span-7 lg:flex lg:flex-col lg:justify-center">
+            {/* Badge superior */}
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/80 px-4 py-2 text-xs uppercase tracking-wider text-foreground backdrop-blur-sm shadow-sm">
+              <span className="h-px w-12 bg-accent"></span>
+              <span>Arquitetura & Interiores</span>
+            </div>
+
+            {/* Título principal */}
+            <h1 className="mb-6 text-5xl font-bold leading-[1.1] tracking-tight text-foreground drop-shadow-lg md:text-6xl lg:text-7xl">
+              <span className="block">Arquitetura</span>
+              <span className="block text-primary drop-shadow-md">autoral</span>
+              <span className="block">e atemporal</span>
+            </h1>
+
+            {/* Descrição */}
+            <p className="mb-8 max-w-xl text-lg leading-relaxed text-foreground/90 drop-shadow-md md:text-xl">
+              Projetos residenciais e comerciais com curadoria de materiais, iluminação e ergonomia. Do conceito à execução.
+            </p>
+
+            {/* CTAs */}
+            <div className="mb-12 flex flex-col gap-4 sm:flex-row">
+              <a 
+                href="#contato" 
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-md bg-primary px-8 py-4 text-sm font-medium text-primary-foreground transition-all hover:shadow-xl hover:shadow-primary/20"
+              >
+                <span className="relative z-10">Agendar Conversa</span>
+                <svg className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-0 transition-opacity group-hover:opacity-100"></div>
+              </a>
+              <a 
+                href="#portfolio" 
+                className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-border bg-background px-8 py-4 text-sm font-medium transition-all hover:border-primary hover:bg-primary/5"
+              >
+                Ver Portfólio
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </a>
+            </div>
+
+            {/* Estatísticas em linha horizontal */}
+            <div className="flex flex-wrap gap-8 border-t border-border/50 bg-background/50 rounded-lg p-6 backdrop-blur-sm pt-8">
+              <div>
+                <div className="text-3xl font-bold text-foreground drop-shadow-md">+7</div>
+                <div className="mt-1 text-xs uppercase tracking-wider text-foreground/80">Anos de experiência</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-foreground drop-shadow-md">+120</div>
+                <div className="mt-1 text-xs uppercase tracking-wider text-foreground/80">Projetos entregues</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-foreground drop-shadow-md">100%</div>
+                <div className="mt-1 text-xs uppercase tracking-wider text-foreground/80">Atendimento nacional</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna direita - Imagem da profissional */}
+          <div className="relative lg:col-span-5">
+            <div className="relative h-[500px] md:h-[600px] lg:h-full lg:min-h-[600px]">
+              {/* Container da imagem com design moderno */}
+              <div className="absolute inset-0">
+                {/* Imagem principal */}
+                <div className="relative h-full w-full overflow-hidden rounded-3xl">
+                  {/* Gradiente decorativo no canto superior direito */}
+                  <div className="absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-primary/20 to-accent/10 blur-3xl"></div>
+                  
+                  {/* Imagem com efeito de profundidade */}
+                  <div className="relative h-full w-full">
+                    <img
+                      className="h-full w-full object-cover"
+                      alt="Luana Palheta - Arquiteta profissional especializada em projetos residenciais e comerciais"
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop&crop=face"
+                    />
+                    {/* Overlay sutil */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/40"></div>
+                  </div>
+
+                  {/* Borda decorativa */}
+                  <div className="absolute inset-0 rounded-3xl border-2 border-border/50"></div>
+                </div>
+
+                {/* Card de identificação profissional - posicionado no canto inferior esquerdo */}
+                <div className="absolute bottom-6 left-6 right-6 z-10 rounded-2xl border border-border/70 bg-background/95 backdrop-blur-md p-5 shadow-2xl md:right-auto md:w-auto">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                      <svg className="h-7 w-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                      </svg>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 text-lg font-bold text-foreground">Luana Palheta</div>
+                      <div className="text-sm text-muted-foreground">Arquiteta & Designer de Interiores</div>
+                      <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                        <svg className="h-3.5 w-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Belém, PA</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Elemento decorativo geométrico - canto superior direito */}
+                <div className="absolute -right-6 top-12 hidden h-32 w-32 rounded-full border-2 border-accent/20 bg-accent/5 blur-2xl lg:block"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Linha decorativa na parte inferior */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
     </section>
   )
 }
@@ -85,7 +330,7 @@ function Hero() {
 function SectionHeading(props: { kicker?: string; title: string; subtitle?: string }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      {props.kicker && <p className="text-xs uppercase tracking-widest text-primary">{props.kicker}</p>}
+      {props.kicker && <p className="text-xs uppercase tracking-widest text-accent">{props.kicker}</p>}
       <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">{props.title}</h2>
       {props.subtitle && <p className="mt-3 text-muted-foreground">{props.subtitle}</p>}
     </div>
